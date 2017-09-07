@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 
 const { Post, RequiredFields } = require('../models/postModel');
+const authorProps = ['lastName', 'firstName'];
 
 router.get('/:id?', (req, res) => {
 
@@ -48,7 +49,6 @@ router.post('/', jsonParser, (req,res) => {
       return res.status(400).send(message);
     }
     else if ( field === 'author' ){
-      let authorProps = ['lastName', 'firstName'];
       for( let j = 0; j < authorProps.length; j ++ ){
         const prop = authorProps[j];
         try {
@@ -82,8 +82,43 @@ router.post('/', jsonParser, (req,res) => {
   });
 });
 
-router.patch('/:id', jsonParser, (req,res) => {
+router.put('/:id', jsonParser, (req,res) => {
 
+  if (!( req.params.id && req.body.id && req.params.id === req.body.id )){
+    const message = `Request path id ${req.params.id} does
+                      not match body id ${req.body.id}`;
+    console.error(message);
+    return res.send(400).json({message:message});
+  }
+
+  const toUpdate = {};
+  const updateableFields = RequiredFields.slice(0);
+  for( let i = 0; i < updateableFields.length; i++ ) {
+    const field = updateableFields[i];
+    if(field in req.body){
+      if ( field === 'author' ) {
+        for( let j = 0; j < authorProps.length; j++ ) {
+          const prop = authorProps[j];
+          try {
+            if (!(prop in req.body.author)) {
+              const message = `Missing ${field}.${prop} in request body`;
+              console.error(message);
+              return res.status(400).json({message:message});
+            }
+          } catch (error) {
+            const message = `Improper ${field} in request body`;
+            console.error(message);
+            return res.status(400).json({message:message});
+          }
+        }
+      }
+      toUpdate[field] = req.body[field];
+    }
+  }
+
+  Post.findByIdAndUpdate(req.body.id, { $set: toUpdate })
+    .then(post => res.status(200).json({message:'Record updated'}))
+    .catch(err => res.status(500).json({message:'Internal server error'}));
 });
 
 router.delete('/:id', (req,res) => {
