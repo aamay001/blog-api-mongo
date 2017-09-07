@@ -1,8 +1,8 @@
-// Simple test to make sure the server starts and stops
+// Simple unit test to make sure the server starts and stops.
+'use strict';
 
 const chai = require('chai');
 const should = chai.should();
-
 const { runServer, closeServer } = require('../server');
 
 describe( 'Start Server', function(){
