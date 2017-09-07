@@ -2,14 +2,18 @@
 
 const express = require('express');
 const morgan = require('morgan');
+const postsRouter = require('./routers/blogpostsRouter');
+
 const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
+
 const { PORT, DATABASE_URL } = require('./settings/config');
 
 const app = express();
 app.use(morgan('dev'));
+app.use('/blog-posts', postsRouter);
 
 let server;
-
 function runServer( databaseUrl = DATABASE_URL, port = PORT ){
   app.locals.status = '';
   return new Promise((resolve, reject) => {
