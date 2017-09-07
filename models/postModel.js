@@ -12,7 +12,7 @@ const postSchema = new mongoose.Schema({
     lastName: String
   },
 
-  created: Date || Date.now.getTime()
+  created: Date
 });
 
 // Strings together all author names in a csv format.
@@ -30,10 +30,11 @@ postSchema.methods.apiGet = function() {
     title: this.title,
     content: this.content,
     author: this.authorString,
-    created: this.created.getTime() || Date.now.getTime()
+    created: this.created.getTime() || (new Date()).getTime()
   };
 }
 
 const Post = mongoose.model('Posts', postSchema);
+const RequiredFields = [ 'title', 'content', 'author' ];
 
-module.exports = Post;
+module.exports = { Post, RequiredFields };
