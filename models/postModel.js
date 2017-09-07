@@ -30,7 +30,7 @@ postSchema.methods.apiGet = function() {
     title: this.title,
     content: this.content,
     author: this.authorString,
-    created: this.created.getTime()
+    created: this.created.getTime() || Date.now.getTime()
   };
 }
 
