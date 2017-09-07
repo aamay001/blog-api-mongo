@@ -25,8 +25,7 @@ router.get('/:id?', (req, res) => {
     Post.find()
       .then( posts => {
         res.json({
-          posts : posts.map(
-            (p) => p.apiGet())
+          posts : posts.map((p) => p.apiGet())
         });
       })
       .catch(

@@ -26,7 +26,7 @@ postSchema.virtual('authorString').get( function() {
 // response of the object.
 postSchema.methods.apiGet = function() {
   return {
-    //id : this._id,
+    id : this._id,
     title: this.title,
     content: this.content,
     author: this.authorString,
