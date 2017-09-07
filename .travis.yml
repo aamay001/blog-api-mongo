@@ -1,0 +1,9 @@
+language: node_js
+node_js: node
+deploy:
+  provider: heroku
+  api_key:
+    secure: ecwJ/iu4o8wog55y7XfZAf++m8M18iYXtgBTAyhRSnL+RyuavlbB0dmiB85MLCH2z5JNPaxhyePN1Talm6fhEXpETNiBf1RoXrByjw3t/0/HHvjO1aiKuUBxLN8UpnAYbOzMHV8OrUi/7qsd1EYKufUpf2f5zhBswdwhDu94SCNxGH7RduzOIO5PzUbH+sSPXJVJsQM8K5AWIddiIRKN0eaf6kzM/O8Uz3ioig6qJfbIStVVlmlUPOMiAYWs8f/BZMgeByI19i391RNTajcYHXnPRrl6bwzbtRlOwsJdUB4SLJs8HAn4gq1oGmRjCoE8WpuyAN3tZAHBWM/BoA2UpLApBB5eQXUCND3NZ0hbUmdOxHLWSpG+uZhenSaWFJ5OtQdrCNnINLaa7DVmuYClq+nj6uQ6IotT4VhFQOpjtm/8+xdlkzoHivVdpLPAzDvuZgTEWMovdc+5uNESPuUHPu9mvCtyXvVw1i7J7NpkapHNWSLKjX/HcLLabWyeLLsE+KPpT3br66RvPYCKZEOKs1wkgSwVWvmQUQPwZZHxNw/Y6BxJm2oV+ZXCOG3aUr8GEychv6XggvWRB2IUmK3xBtadocycKSli+rwBMOA5u0dTOPrr/eTlNzLrZHYFPzO/lLmPHysXoQHUI6KI4xwTOQQgXpiDOZnc+M0K543S5TQ=
+  app: serene-dusk-50151
+  on:
+    repo: aamay001/blog-api-mongo
