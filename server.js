@@ -11,6 +11,7 @@ app.use(morgan('dev'));
 let server;
 
 function runServer( databaseUrl = DATABASE_URL, port = PORT ){
+  app.locals.status = '';
   return new Promise((resolve, reject) => {
     mongoose.connect(databaseUrl, err => {
       if (err){
@@ -19,7 +20,8 @@ function runServer( databaseUrl = DATABASE_URL, port = PORT ){
       }
       server = app.listen(port, () => {
         console.log(`Server listening on port ${port}`);
-        resolve();
+        app.locals.status = 'OK';
+        resolve(app.locals);
       })
       .on('error', err => {
         mongoose.disconnect();
@@ -30,6 +32,7 @@ function runServer( databaseUrl = DATABASE_URL, port = PORT ){
 }
 
 function closeServer(){
+  app.locals.status = '';
   return mongoose.disconnect()
     .then( () => {
       return new Promise( (resolve, reject) => {
@@ -38,7 +41,8 @@ function closeServer(){
           if (err){
             return reject(err);
           }
-          resolve();
+          app.locals.status = 'OK';
+          resolve(app.locals);
         });
       });
     });
