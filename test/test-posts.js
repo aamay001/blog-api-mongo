@@ -19,7 +19,7 @@ describe('Blog Posts - GET', function() {
 
   it('should get all blog posts', function(){
     return chai.request(app)
-      .get('/blog-posts')
+      .get('/posts')
       .then(function(res){
         res.should.have.status(200);
         res.should.be.json;
@@ -30,11 +30,11 @@ describe('Blog Posts - GET', function() {
 
   it('should get a single blog post', function(){
     return chai.request(app)
-      .get('/blog-posts')
+      .get('/posts')
       .then(function(res){
         const postId = res.body.posts[0].id;
         return chai.request(app)
-          .get(`/blog-posts/${postId}`)
+          .get(`/posts/${postId}`)
           .then(function(res){
             res.should.have.status(200);
             res.should.be.json;
