@@ -8,8 +8,10 @@ const jsonParser = bodyParser.json();
 const { Post, RequiredFields } = require('../models/postModel');
 const authorProps = ['lastName', 'firstName'];
 
+/////////////////////////////////////////////////////////////////////
+// GE - Read Records
+/////////////////////////////////////////////////////////////////////
 router.get('/:id?', (req, res) => {
-
   if (req.params.id) {
     Post.find( { _id : req.params.id } )
       .then( post => {
@@ -40,13 +42,16 @@ router.get('/:id?', (req, res) => {
   }
 });
 
+/////////////////////////////////////////////////////////////////////
+// POST - Create Record
+/////////////////////////////////////////////////////////////////////
 router.post('/', jsonParser, (req,res) => {
   for ( let i = 0; i < RequiredFields.length; i++ ) {
     const field = RequiredFields[i];
     if(!(field in req.body)) {
       const message = `Missing ${field} in request body`;
       console.error(message);
-      return res.status(400).send(message);
+      return res.status(400).json({message:message});
     }
     else if ( field === 'author' ){
       for( let j = 0; j < authorProps.length; j ++ ){
@@ -55,17 +60,16 @@ router.post('/', jsonParser, (req,res) => {
           if (!(prop in req.body.author)) {
             const message = `Missing ${field}.${prop} in request body`;
             console.error(message);
-            return res.status(400).send(message);
+            return res.status(400).json({message:message});
           }
         } catch (error) {
           const message = `Improper ${field} in request body`;
           console.error(message);
-          return res.status(400).send(message);
+          return res.status(400).json({message:message});
         }
       }
     }
   }
-
   Post.create({
     title: req.body.title,
     content: req.body.content,
@@ -82,15 +86,16 @@ router.post('/', jsonParser, (req,res) => {
   });
 });
 
+/////////////////////////////////////////////////////////////////////
+// PUT - Update Record
+/////////////////////////////////////////////////////////////////////
 router.put('/:id', jsonParser, (req,res) => {
-
   if (!( req.params.id && req.body.id && req.params.id === req.body.id )){
-    const message = `Request path id ${req.params.id} does
-                      not match body id ${req.body.id}`;
+    const message = `Request path id ${req.params.id} does` +
+                    ` not match body id ${req.body.id}`;
     console.error(message);
-    return res.send(400).json({message:message});
+    return res.status(400).json({message:message});
   }
-
   const toUpdate = {};
   const updateableFields = RequiredFields.slice(0);
   for( let i = 0; i < updateableFields.length; i++ ) {
@@ -115,14 +120,33 @@ router.put('/:id', jsonParser, (req,res) => {
       toUpdate[field] = req.body[field];
     }
   }
-
   Post.findByIdAndUpdate(req.body.id, { $set: toUpdate })
-    .then(post => res.status(200).json({message:'Record updated'}))
+    .then(post => {
+      console.log(`Record updated : ${post._id}`)
+      res.status(200).json({message:'Record updated', post})
+    })
     .catch(err => res.status(500).json({message:'Internal server error'}));
 });
 
-router.delete('/:id', (req,res) => {
-
+/////////////////////////////////////////////////////////////////////
+// DELETE - Remove Record
+/////////////////////////////////////////////////////////////////////
+router.delete('/:id', jsonParser, (req,res) => {
+  if (!( req.params.id && req.body.id && req.params.id === req.body.id )){
+    const message = `Request path id ${req.params.id} does` +
+                    ` not match body id ${req.body.id}`;
+    console.error(message);
+    return res.status(400).json({message:message});
+  }
+  Post.deleteOne({_id: req.params.id})
+    .then(post => {
+      console.log(`Record deleted: ${req.params.id}`)
+      res.status(204).end();
+    })
+    .catch(err => {
+      console.error(err);
+      return res.status(500).json({message:'Internal server error'});
+    });
 });
 
 module.exports = router;
