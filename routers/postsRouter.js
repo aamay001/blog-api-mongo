@@ -123,7 +123,7 @@ router.put('/:id', jsonParser, (req,res) => {
   Post.findByIdAndUpdate(req.body.id, { $set: toUpdate })
     .then(post => {
       console.log(`Record updated : ${post._id}`)
-      res.status(200).json({message:'Record updated', post})
+      res.status(200).json({message:'Record updated'})
     })
     .catch(err => res.status(500).json({message:'Internal server error'}));
 });
